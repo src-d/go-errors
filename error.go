@@ -27,6 +27,27 @@ func (k *Kind) Wrap(err error) *Error {
 	}
 }
 
+func (k *Kind) Is(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	e, ok := err.(*Error)
+	if !ok {
+		return false
+	}
+
+	if k == e.Kind {
+		return true
+	}
+
+	if e.Child == nil {
+		return false
+	}
+
+	return k.Is(e.Child)
+}
+
 func (k *Kind) Match(required ...*Kind) bool {
 
 	for _, kind := range required {

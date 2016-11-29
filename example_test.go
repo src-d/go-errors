@@ -11,7 +11,7 @@ func ExampleNew() {
 	var ErrExample = errors.New("example")
 
 	err := ErrExample.New()
-	if errors.Is(err, ErrExample) {
+	if ErrExample.Is(err) {
 		fmt.Println(err)
 	}
 
@@ -22,7 +22,7 @@ func ExampleNewFormat() {
 	var ErrMaxLimitReached = errors.New("max. limit reached: %d")
 
 	err := ErrMaxLimitReached.New(42)
-	if errors.Is(err, ErrMaxLimitReached) {
+	if ErrMaxLimitReached.Is(err) {
 		fmt.Println(err)
 	}
 
@@ -33,7 +33,7 @@ func ExampleWrap() {
 	var ErrNetworking = errors.New("network error")
 
 	err := ErrNetworking.Wrap(io.EOF)
-	if errors.Is(err, ErrNetworking) {
+	if ErrNetworking.Is(err) {
 		fmt.Println(err)
 	}
 
@@ -47,9 +47,21 @@ func ExampleNestedWrap() {
 	err3 := io.EOF
 	err2 := ErrReading.Wrap(err3)
 	err1 := ErrNetworking.Wrap(err2)
-	if errors.Is(err1, ErrReading) {
+	if ErrReading.Is(err1) {
 		fmt.Println(err1)
 	}
 
 	// Output: network error: reading error: EOF
+}
+
+func ExampleAlternativeMultiple() {
+	var ErrNetworking = errors.New("network error")
+	var ErrReading = errors.New("reading error")
+
+	err := ErrNetworking.New()
+	if errors.Is(err, ErrReading, ErrNetworking) {
+		fmt.Println(err)
+	}
+
+	// Output: network error
 }

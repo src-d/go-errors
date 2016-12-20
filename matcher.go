@@ -1,33 +1,31 @@
 package errors
 
+// Matcher match a given error
 type Matcher interface {
-	Match(required ...*Kind) bool
+	// Is return true if the err match
+	Is(err error) bool
 }
 
+// Is check if err match all matchers
 func Is(err error, matchers ...Matcher) bool {
-	if err == nil {
-		return false
-	}
-
-	e, ok := err.(*Error)
-	if !ok {
-		return false
-	}
-
-	if e.Child != nil && Is(e.Child, matchers...) {
-		return true
-	}
-
+	var are int
 	for _, m := range matchers {
-		if m.Match(e.Kind) {
-			return true
+		if m.Is(err) {
+			are++
 		}
 	}
 
-	return false
+	wanted := len(matchers)
+	return wanted == are
 }
 
-func (k *Kind) matchChild(required ...*Kind) bool {
+// Any check if err match any matchers
+func Any(err error, matchers ...Matcher) bool {
+	for _, m := range matchers {
+		if m.Is(err) {
+			return true
+		}
+	}
 
 	return false
 }

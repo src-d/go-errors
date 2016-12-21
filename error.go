@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// Kind represents a kind of an error, from a Kind you can generate as many
+// Kind represents the kind as an error, from a Kind you can generate as many
 // Error instances of you want of this Kind
 type Kind struct {
 	Message string
@@ -24,7 +24,7 @@ func (k *Kind) New(values ...interface{}) *Error {
 	}
 }
 
-// Wrap create a new Error of this Kind with cause error
+// Wrap creates a new Error of this Kind with the cause error
 func (k *Kind) Wrap(cause error) *Error {
 	return &Error{
 		Kind:    k,
@@ -33,7 +33,7 @@ func (k *Kind) Wrap(cause error) *Error {
 	}
 }
 
-// Is checks if the given error or any of his children are of this Kind
+// Is checks if the given error or any of its children are of this Kind
 func (k *Kind) Is(err error) bool {
 	if err == nil {
 		return false

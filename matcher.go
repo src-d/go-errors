@@ -1,26 +1,32 @@
 package errors
 
-// Matcher match a given error
+// Matcher matches a given error
 type Matcher interface {
-	// Is return true if the err match
+	// Is returns true if the err matches
 	Is(err error) bool
 }
 
-// Is check if err match all matchers
+// Is check if err matches all matchers
 func Is(err error, matchers ...Matcher) bool {
-	var are int
+	if len(matchers) == 0 {
+		return false
+	}
+
 	for _, m := range matchers {
-		if m.Is(err) {
-			are++
+		if !m.Is(err) {
+			return false
 		}
 	}
 
-	wanted := len(matchers)
-	return wanted == are
+	return true
 }
 
-// Any check if err match any matchers
+// Any checks if err matches any matchers
 func Any(err error, matchers ...Matcher) bool {
+	if len(matchers) == 0 {
+		return false
+	}
+
 	for _, m := range matchers {
 		if m.Is(err) {
 			return true

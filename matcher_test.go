@@ -15,6 +15,10 @@ func TestIs(t *testing.T) {
 	assert.Equal(t, Is(io.EOF, k), false)
 }
 
+func TestIsEmpty(t *testing.T) {
+	assert.Equal(t, Is(nil), false)
+}
+
 func TestIsMultiple(t *testing.T) {
 	k1 := NewKind("foo")
 	err1 := k1.New("bar")
@@ -33,4 +37,8 @@ func TestAny(t *testing.T) {
 
 	assert.Equal(t, Any(err, k1, k2), true)
 	assert.Equal(t, Any(io.EOF, k1, k2), false)
+}
+
+func TestAnyEmpty(t *testing.T) {
+	assert.Equal(t, Any(nil), false)
 }

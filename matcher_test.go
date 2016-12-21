@@ -8,7 +8,7 @@ import (
 )
 
 func TestIs(t *testing.T) {
-	k := New("foo")
+	k := NewKind("foo")
 	err := k.New("bar")
 
 	assert.Equal(t, Is(err, k), true)
@@ -16,20 +16,20 @@ func TestIs(t *testing.T) {
 }
 
 func TestIsMultiple(t *testing.T) {
-	k1 := New("foo")
+	k1 := NewKind("foo")
 	err1 := k1.New("bar")
 
-	k2 := New("qux")
+	k2 := NewKind("qux")
 	err2 := k2.Wrap(err1)
 
 	assert.Equal(t, Is(err2, k1, k2), true)
 }
 
 func TestAny(t *testing.T) {
-	k1 := New("foo")
+	k1 := NewKind("foo")
 	err := k1.New("bar")
 
-	k2 := New("qux")
+	k2 := NewKind("qux")
 
 	assert.Equal(t, Any(err, k1, k2), true)
 	assert.Equal(t, Any(io.EOF, k1, k2), false)

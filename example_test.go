@@ -8,7 +8,7 @@ import (
 )
 
 func ExampleNew() {
-	var ErrExample = errors.New("example")
+	var ErrExample = errors.NewKind("example")
 
 	err := ErrExample.New()
 	if ErrExample.Is(err) {
@@ -19,7 +19,7 @@ func ExampleNew() {
 }
 
 func ExampleNew_format() {
-	var ErrMaxLimitReached = errors.New("max. limit reached: %d")
+	var ErrMaxLimitReached = errors.NewKind("max. limit reached: %d")
 
 	err := ErrMaxLimitReached.New(42)
 	if ErrMaxLimitReached.Is(err) {
@@ -30,7 +30,7 @@ func ExampleNew_format() {
 }
 
 func ExampleKind_Wrap() {
-	var ErrNetworking = errors.New("network error")
+	var ErrNetworking = errors.NewKind("network error")
 
 	err := ErrNetworking.Wrap(io.EOF)
 	if ErrNetworking.Is(err) {
@@ -41,8 +41,8 @@ func ExampleKind_Wrap() {
 }
 
 func ExampleKind_Wrap_nested() {
-	var ErrNetworking = errors.New("network error")
-	var ErrReading = errors.New("reading error")
+	var ErrNetworking = errors.NewKind("network error")
+	var ErrReading = errors.NewKind("reading error")
 
 	err3 := io.EOF
 	err2 := ErrReading.Wrap(err3)
@@ -55,8 +55,8 @@ func ExampleKind_Wrap_nested() {
 }
 
 func ExampleAny() {
-	var ErrNetworking = errors.New("network error")
-	var ErrReading = errors.New("reading error")
+	var ErrNetworking = errors.NewKind("network error")
+	var ErrReading = errors.NewKind("reading error")
 
 	err := ErrNetworking.New()
 	if errors.Any(err, ErrReading, ErrNetworking) {

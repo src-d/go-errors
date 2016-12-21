@@ -10,8 +10,8 @@ type Kind struct {
 	Message string
 }
 
-// New returns a Kind with the given msg
-func New(msg string) *Kind {
+// NewKind returns a Kind with the given msg
+func NewKind(msg string) *Kind {
 	return &Kind{Message: msg}
 }
 

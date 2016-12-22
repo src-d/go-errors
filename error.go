@@ -4,14 +4,19 @@ import (
 	"fmt"
 )
 
-func New(msg string) *Kind {
-	return &Kind{Message: msg}
-}
-
+// Kind represents the kind as an error, from a Kind you can generate as many
+// Error instances of you want of this Kind
 type Kind struct {
 	Message string
 }
 
+// NewKind returns a Kind with the given msg
+func NewKind(msg string) *Kind {
+	return &Kind{Message: msg}
+}
+
+// New returns a new Error, values can be pass to it if the Kind was created
+// using an printf format
 func (k *Kind) New(values ...interface{}) *Error {
 	return &Error{
 		Kind:    k,
@@ -19,14 +24,16 @@ func (k *Kind) New(values ...interface{}) *Error {
 	}
 }
 
-func (k *Kind) Wrap(err error) *Error {
+// Wrap creates a new Error of this Kind with the cause error
+func (k *Kind) Wrap(cause error) *Error {
 	return &Error{
 		Kind:    k,
-		Child:   err,
+		Cause:   cause,
 		Message: k.Message + ": %s",
 	}
 }
 
+// Is checks if the given error or any of its children are of this Kind
 func (k *Kind) Is(err error) bool {
 	if err == nil {
 		return false
@@ -41,35 +48,27 @@ func (k *Kind) Is(err error) bool {
 		return true
 	}
 
-	if e.Child == nil {
+	if e.Cause == nil {
 		return false
 	}
 
-	return k.Is(e.Child)
+	return k.Is(e.Cause)
 }
 
-func (k *Kind) Match(required ...*Kind) bool {
-
-	for _, kind := range required {
-		if k == kind {
-			return true
-		}
-	}
-
-	return false
-}
-
+// Error represents an error of some Kind, implements the error interface
 type Error struct {
-	Kind    *Kind
-	Child   error
+	// Kind is a pointer to the Kind of this error
+	Kind *Kind
+	// Cause of the error
+	Cause error
+	// Message describing the error
 	Message string
 }
 
 func (err *Error) Error() string {
-	if err.Child == nil {
-
+	if err.Cause == nil {
 		return err.Message
 	}
 
-	return fmt.Sprintf(err.Message, err.Child.Error())
+	return fmt.Sprintf(err.Message, err.Cause.Error())
 }

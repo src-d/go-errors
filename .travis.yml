@@ -16,5 +16,7 @@ install:
   - go get -v -t ./...
 
 script:
-  - cd $GOPATH/src/srcd.works/go-errors.v0
-  - go test -v ./...
+  - make test
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)

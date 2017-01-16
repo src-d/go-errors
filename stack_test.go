@@ -4,19 +4,23 @@ import (
 	"fmt"
 	"testing"
 
+	"strings"
+
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCaller(t *testing.T) {
 	s := NewStackTrace(0)
-	assert.NotEmpty(t, s.StackTrace)
+	assert.NotNil(t, s)
 
-	assert.Equal(t, fmt.Sprintf("%s", s), "[stack_test.go testing.go asm_amd64.s]")
+	o := fmt.Sprintf("%s", s)
+	assert.Equal(t, strings.HasPrefix(o, "[stack_test.go testing.go"), true)
 }
 
 func TestCallerSkip(t *testing.T) {
-	s := NewStackTrace(1)
-	assert.NotEmpty(t, s.StackTrace)
+	full := NewStackTrace(0)
+	assert.NotNil(t, full)
 
-	assert.Equal(t, fmt.Sprintf("%s", s), "[testing.go asm_amd64.s]")
+	s := NewStackTrace(1)
+	assert.Len(t, s.StackTrace, len(full.StackTrace)-1)
 }

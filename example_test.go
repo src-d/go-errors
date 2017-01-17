@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"srcd.works/errors.v0"
+	"srcd.works/go-errors.v0"
 )
 
 func ExampleKind_New() {

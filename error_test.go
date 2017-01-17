@@ -75,5 +75,5 @@ func TestFormatExtendedVerbose(t *testing.T) {
 	lines := strings.Split(fmt.Sprintf("%+v", err), "\n")
 	assert.Len(t, lines, 8)
 	assert.Equal(t, lines[0], "foo bar")
-	assert.Equal(t, lines[2], "srcd.works/errors%2ev0.TestFormatExtendedVerbose")
+	assert.Equal(t, lines[2], "srcd.works/go-errors%2ev0.TestFormatExtendedVerbose")
 }

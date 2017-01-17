@@ -1,7 +1,9 @@
 package errors
 
 import (
+	"fmt"
 	"io"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,23 +17,22 @@ func TestNew(t *testing.T) {
 func TestKindNew(t *testing.T) {
 	k := NewKind("foo")
 	err := k.New()
-	assert.Equal(t, err.Message, "foo")
-	assert.Equal(t, err.Kind, k)
+	assert.Equal(t, err.Error(), "foo")
+	assert.NotNil(t, err.StackTrace())
 }
 
 func TestKindNewWithFormat(t *testing.T) {
 	k := NewKind("foo %s")
 	err := k.New("bar")
-	assert.Equal(t, err.Message, "foo bar")
-	assert.Equal(t, err.Kind, k)
+	assert.Equal(t, err.Error(), "foo bar")
 }
 
 func TestKindWrap(t *testing.T) {
 	k := NewKind("foo")
 	err := k.Wrap(io.EOF)
-	assert.Equal(t, err.Message, "foo: %s")
-	assert.Equal(t, err.Kind, k)
-	assert.Equal(t, err.Cause, io.EOF)
+	assert.Equal(t, err.Error(), "foo: EOF")
+	assert.Equal(t, err.Cause(), io.EOF)
+	assert.NotNil(t, err.StackTrace())
 }
 
 func TestKindIs(t *testing.T) {
@@ -56,4 +57,23 @@ func TestError(t *testing.T) {
 func TestErrorCause(t *testing.T) {
 	err := NewKind("foo").Wrap(io.EOF)
 	assert.Equal(t, err.Error(), "foo: EOF")
+}
+
+func TestFormat(t *testing.T) {
+	err := NewKind("foo %s").New("bar")
+	assert.Equal(t, fmt.Sprintf("%s", err), "foo bar")
+}
+
+func TestFormatQuoted(t *testing.T) {
+	err := NewKind("foo %s").New("bar")
+	assert.Equal(t, fmt.Sprintf("%q", err), `"foo bar"`)
+}
+
+func TestFormatExtendedVerbose(t *testing.T) {
+	err := NewKind("foo %s").New("bar")
+
+	lines := strings.Split(fmt.Sprintf("%+v", err), "\n")
+	assert.Len(t, lines, 8)
+	assert.Equal(t, lines[0], "foo bar")
+	assert.Equal(t, lines[2], "srcd.works/errors%2ev0.TestFormatExtendedVerbose")
 }

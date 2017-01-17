@@ -2,6 +2,7 @@ package errors
 
 import (
 	"fmt"
+	"io"
 )
 
 // Kind represents the kind as an error, from a Kind you can generate as many
@@ -19,17 +20,19 @@ func NewKind(msg string) *Kind {
 // using an printf format
 func (k *Kind) New(values ...interface{}) *Error {
 	return &Error{
-		Kind:    k,
-		Message: fmt.Sprintf(k.Message, values...),
+		kind:    k,
+		message: fmt.Sprintf(k.Message, values...),
+		stack:   NewStackTrace(1),
 	}
 }
 
 // Wrap creates a new Error of this Kind with the cause error
 func (k *Kind) Wrap(cause error) *Error {
 	return &Error{
-		Kind:    k,
-		Cause:   cause,
-		Message: k.Message + ": %s",
+		kind:    k,
+		cause:   cause,
+		message: k.Message + ": %s",
+		stack:   NewStackTrace(1),
 	}
 }
 
@@ -44,31 +47,64 @@ func (k *Kind) Is(err error) bool {
 		return false
 	}
 
-	if k == e.Kind {
+	if k == e.kind {
 		return true
 	}
 
-	if e.Cause == nil {
+	if e.cause == nil {
 		return false
 	}
 
-	return k.Is(e.Cause)
+	return k.Is(e.cause)
 }
 
 // Error represents an error of some Kind, implements the error interface
 type Error struct {
-	// Kind is a pointer to the Kind of this error
-	Kind *Kind
-	// Cause of the error
-	Cause error
-	// Message describing the error
-	Message string
+	kind    *Kind
+	cause   error
+	message string
+	stack   StackTrace
+}
+
+// Cause returns the underlying cause of the error
+func (err *Error) Cause() error {
+	return err.cause
 }
 
 func (err *Error) Error() string {
-	if err.Cause == nil {
-		return err.Message
+	if err.cause == nil {
+		return err.message
 	}
 
-	return fmt.Sprintf(err.Message, err.Cause.Error())
+	return fmt.Sprintf(err.message, err.cause.Error())
+}
+
+// StackTrace returns an stack trace of the error
+func (err *Error) StackTrace() StackTrace {
+	return err.stack
+}
+
+// Format implements fmt.Formatter and can be formatted by the fmt package. The
+// following verbs are supported
+//
+//     %s    print the error. If the error has a Cause it will be
+//           printed recursively
+//     %v    see %s
+//     %+v   extended format. Each Frame of the error's StackTrace will
+//           be printed in detail.
+func (err *Error) Format(s fmt.State, verb rune) {
+	switch verb {
+	case 'v':
+		if s.Flag('+') {
+			io.WriteString(s, err.Error()+"\n")
+			err.stack.Format(s, verb)
+			return
+		}
+
+		fallthrough
+	case 's':
+		io.WriteString(s, err.Error())
+	case 'q':
+		fmt.Fprintf(s, "%q", err.Error())
+	}
 }

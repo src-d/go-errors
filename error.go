@@ -26,12 +26,13 @@ func (k *Kind) New(values ...interface{}) *Error {
 	}
 }
 
-// Wrap creates a new Error of this Kind with the cause error
-func (k *Kind) Wrap(cause error) *Error {
+// Wrap creates a new Error of this Kind with the cause error, values can be
+// passes to it if the Kind was created using printf format.
+func (k *Kind) Wrap(cause error, values ...interface{}) *Error {
 	return &Error{
 		kind:    k,
 		cause:   cause,
-		message: k.Message + ": %s",
+		message: fmt.Sprintf(k.Message, values...) + ": %s",
 		stack:   NewStackTrace(1),
 	}
 }

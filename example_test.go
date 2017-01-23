@@ -40,6 +40,17 @@ func ExampleKind_Wrap() {
 	// Output: network error: EOF
 }
 
+func ExampleKind_Wrap_pattern() {
+	var ErrFileRead = errors.NewKind("error reading %s")
+
+	err := ErrFileRead.Wrap(io.ErrUnexpectedEOF, "/tmp/file")
+	if ErrFileRead.Is(err) {
+		fmt.Println(err)
+	}
+
+	// Output: error reading /tmp/file: unexpected EOF
+}
+
 func ExampleKind_Wrap_nested() {
 	var ErrNetworking = errors.NewKind("network error")
 	var ErrReading = errors.NewKind("reading error")

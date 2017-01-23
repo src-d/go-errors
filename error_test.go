@@ -35,6 +35,14 @@ func TestKindWrap(t *testing.T) {
 	assert.NotNil(t, err.StackTrace())
 }
 
+func TestKindWrapWithFormat(t *testing.T) {
+	k := NewKind("foo %s")
+	err := k.Wrap(io.EOF, "bar")
+	assert.Equal(t, err.Error(), "foo bar: EOF")
+	assert.Equal(t, err.Cause(), io.EOF)
+	assert.NotNil(t, err.StackTrace())
+}
+
 func TestKindIs(t *testing.T) {
 	k := NewKind("foo")
 	err := k.New("bar")

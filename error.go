@@ -5,8 +5,8 @@ import (
 	"io"
 )
 
-// Kind represents the kind as an error, from a Kind you can generate as many
-// Error instances of you want of this Kind
+// Kind represents the kind of an error, from a Kind you can generate as many
+// Error instances as you want of this Kind
 type Kind struct {
 	Message string
 }
@@ -16,8 +16,8 @@ func NewKind(msg string) *Kind {
 	return &Kind{Message: msg}
 }
 
-// New returns a new Error, values can be pass to it if the Kind was created
-// using an printf format
+// New returns a new Error, values can be passed to it if the Kind was created
+// using printf format
 func (k *Kind) New(values ...interface{}) *Error {
 	return &Error{
 		kind:    k,
@@ -27,7 +27,7 @@ func (k *Kind) New(values ...interface{}) *Error {
 }
 
 // Wrap creates a new Error of this Kind with the cause error, values can be
-// passes to it if the Kind was created using printf format.
+// passed to it if the Kind was created using printf format.
 func (k *Kind) Wrap(cause error, values ...interface{}) *Error {
 	return &Error{
 		kind:    k,

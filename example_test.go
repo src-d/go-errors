@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"gopkg.in/src-d/go-errors.v0"
+	"gopkg.in/src-d/go-errors.v1"
 )
 
 func ExampleKind_New() {
@@ -75,7 +75,7 @@ func ExampleError_printf() {
 	// example with stack trace
 	//
 	// gopkg.in/src-d/errors%2v0_test.ExampleError_Format
-	//         /home/mcuadros/workspace/go/src/gopkg.in/src-d/errors.v0/example_test.go:60
+	//         /home/mcuadros/workspace/go/src/gopkg.in/src-d/errors.v1/example_test.go:60
 	// testing.runExample
 	//         /usr/lib/go/src/testing/example.go:114
 	// testing.RunExamples

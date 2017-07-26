@@ -1,18 +1,11 @@
 language: go
 
 go:
-    - 1.7.x
-    - tip
+    - 1.8
 
-matrix:
-    allow_failures:
-        - go: tip
+go_import_path: gopkg.in/src-d/go-errors.v1
 
 install:
-  - rm -rf $GOPATH/src/gopkg.in/src-d
-  - mkdir -p $GOPATH/src/gopkg.in/src-d
-  - ln -s $PWD $GOPATH/src/gopkg.in/src-d/go-errors.v0
-  - cd $GOPATH/src/gopkg.in/src-d/go-errors.v0
   - go get -v -t ./...
 
 script:

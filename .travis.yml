@@ -1,9 +1,10 @@
 language: go
 
-go:
-    - 1.8
-
 go_import_path: gopkg.in/src-d/go-errors.v1
+
+go:
+    - 1.11
+    - 1.12
 
 install:
   - go get -v -t ./...
@@ -13,3 +14,10 @@ script:
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+
+jobs:
+  include:
+    - name: 'Go Modules'
+      install:
+      script:
+        - GO111MODULE=on make test

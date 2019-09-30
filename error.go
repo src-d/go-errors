@@ -72,6 +72,12 @@ func (err *Error) Cause() error {
 	return err.cause
 }
 
+// Unwrap returns the underlying cause of the error.
+// It implements a new optional error interface introduced in Go 1.13.
+func (err *Error) Unwrap() error {
+	return err.cause
+}
+
 func (err *Error) Error() string {
 	if err.cause == nil {
 		return err.message

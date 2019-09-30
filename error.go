@@ -67,6 +67,11 @@ type Error struct {
 	stack   StackTrace
 }
 
+// Kind returns a kind of the error
+func (err *Error) Kind() *Kind {
+	return err.kind
+}
+
 // Cause returns the underlying cause of the error
 func (err *Error) Cause() error {
 	return err.cause
